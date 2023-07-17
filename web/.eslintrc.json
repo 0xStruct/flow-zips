@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "eslint-config-next",
+    "next/core-web-vitals",
+    "plugin:react/recommended",
+    "plugin:prettier/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:prettier/recommended",
+    "plugin:react/jsx-runtime",
+    "next/babel"
+  ],
+  "rules": {
+    "semi": "off",
+    "@next/next/no-img-element": "off"
+  }
+}
