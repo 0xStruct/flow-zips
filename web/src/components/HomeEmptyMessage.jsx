@@ -28,9 +28,9 @@ export default function HomeEmptyMessage() {
             Buy / Sell / Trade secret codes, giftcard codes, event passes, recharge codes, etc
           </p>
 
-          <Button onClick="/mint">
+          <ButtonLink href={paths.mint}>
             MINT YOUR FIRST ZIP
-          </Button>
+          </ButtonLink>
 
           <hr className="mt-8 mb-6" />
 
@@ -39,7 +39,7 @@ export default function HomeEmptyMessage() {
             Learn how distributed partial keys and multi-party computation safely keep your secrets private.
           </p>
 
-          <ButtonLink href={paths.githubRepo} target="_blank" color="outline" className="mb-2">
+          <ButtonLink href={paths.demoVideo} target="_blank" color="outline" className="mb-2">
             VIEW VIDEO DEMO
           </ButtonLink>
           <ButtonLink href={paths.githubRepo} target="_blank" color="outline" className="mb-2">

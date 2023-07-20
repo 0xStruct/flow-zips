@@ -29,7 +29,7 @@ transaction(recipient: Address, zipName: String, zipValue: String, color: UInt8)
     self.kittyItemsCollection = getOrCreateCollection(account: signer)
 
     // Borrow the recipient's public NFT collection reference
-    self.recipientCollectionRef = getAccount(0x179b6b1cb6755e31)
+    self.recipientCollectionRef = getAccount(signer.address)
         .getCapability(KittyItems.CollectionPublicPath)
         .borrow<&{NonFungibleToken.CollectionPublic}>()
         ?? panic("Could not get receiver reference to the NFT Collection")

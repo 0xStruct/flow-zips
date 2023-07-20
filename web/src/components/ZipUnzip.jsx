@@ -71,8 +71,8 @@ export default function ZipUnzip({ item }) {
             {unzipped === true &&
                 <>
                 <em>Reveal your secret below:</em>
-                <div class="rounded-full h-12 bg-gray-600 relative mt-4">
-                    <div class="opacity-0 hover:opacity-100 duration-300 absolute inset-0 z-10 flex justify-center items-center text-xl text-white font-semibold">
+                <div className="rounded-full h-12 bg-gray-600 relative mt-4 hover:bg-gray-200">
+                    <div className="opacity-0 hover:opacity-100 duration-800 absolute inset-0 z-10 flex justify-center items-center text-xl text-black font-semibold">
                         {secret}
                     </div>
                 </div>

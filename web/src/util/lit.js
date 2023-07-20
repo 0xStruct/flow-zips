@@ -1,8 +1,12 @@
-import * as LitJsSdk from '@lit-protocol/lit-node-client';
+//import * as LitJsSdk from '@lit-protocol/lit-node-client';
+import * as LitJsSdk from "@lit-protocol/lit-node-client-nodejs";
+import * as u8a from "uint8arrays";
+import { ethers } from "ethers";
+import { SiweMessage } from "siwe";
 
-const client = new LitJsSdk.LitNodeClient({
-  alertWhenUnauthorized: false,
+const client  = new LitJsSdk.LitNodeClientNodeJs({
   litNetwork: "serrano",
+  alertWhenUnauthorized: false,
   debug: true,
 });
 
@@ -24,6 +28,50 @@ var accessControlConditions = [
   },
 ];
 
+/**
+ * Get auth signature using siwe
+ * @returns 
+ */
+const signAuthMessage = async () => {
+
+  // Replace this with your private key
+  // 0xcD9527b1e742440D6A06E3646102EaBf76963C77
+  console.log(process.env.ETH_PRIVATE_KEY)
+  const privKey = process.env.ETH_PRIVATE_KEY;
+  const privKeyBuffer = u8a.fromString(privKey, "base16");
+  const wallet = new ethers.Wallet(privKeyBuffer);
+
+  const domain = "localhost";
+  const origin = "https://localhost/login";
+  const statement = "please sign";
+
+  const siweMessage = new SiweMessage({
+      domain,
+      address: wallet.address,
+      statement,
+      uri: origin,
+      version: "1",
+      chainId: "1",
+  });
+
+  const messageToSign = siweMessage.prepareMessage();
+
+  const signature = await wallet.signMessage(messageToSign);
+
+  console.log("signature", signature);
+
+  const recoveredAddress = ethers.utils.verifyMessage(messageToSign, signature);
+
+  const authSig = {
+      sig: signature,
+      derivedVia: "web3.eth.personal.sign",
+      signedMessage: messageToSign,
+      address: recoveredAddress,
+  };
+
+  return authSig;
+}
+
 class Lit {
   litNodeClient;
 
@@ -39,12 +87,7 @@ class Lit {
     //const authSig = await LitJsSdk.checkAndSignAuthMessage({ chain });
     // authSig is not sensitive in the process but it will be generated one each for an nft later
     // authSig session does expire, so there needs an api call for authSig
-    const authSig = {
-      "sig": "0x746c42ed63cecaba9d91376dfeddd76d825b0e16303512c7ac7f1d7e24c1466750a440aecd5d99add16ef30eab25930d6ebd9d4f06ac4f61eaef5b5797c3dac41b",
-      "derivedVia": "web3.eth.personal.sign",
-      "signedMessage": "localhost:3002 wants you to sign in with your Ethereum account:\n0xF75a0001F014204CecD8c84A838495352c06178B\n\n\nURI: http://localhost:3002/\nVersion: 1\nChain ID: 1\nNonce: VSuoypVnDqyxL9DdV\nIssued At: 2023-07-17T13:07:41.436Z\nExpiration Time: 2023-07-18T13:07:41.371Z",
-      "address": "0xf75a0001f014204cecd8c84a838495352c06178b"
-    }
+    const authSig = await signAuthMessage();
     console.log("authSig: ", authSig)
     const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(text);
 
@@ -69,12 +112,7 @@ class Lit {
     //const authSig = await LitJsSdk.checkAndSignAuthMessage({ chain });
     // authSig is not sensitive in the process but it will be generated one each for an nft later
     // authSig session does expire, so there needs an api call for authSig
-    const authSig = {
-      "sig": "0x746c42ed63cecaba9d91376dfeddd76d825b0e16303512c7ac7f1d7e24c1466750a440aecd5d99add16ef30eab25930d6ebd9d4f06ac4f61eaef5b5797c3dac41b",
-      "derivedVia": "web3.eth.personal.sign",
-      "signedMessage": "localhost:3002 wants you to sign in with your Ethereum account:\n0xF75a0001F014204CecD8c84A838495352c06178B\n\n\nURI: http://localhost:3002/\nVersion: 1\nChain ID: 1\nNonce: VSuoypVnDqyxL9DdV\nIssued At: 2023-07-17T13:07:41.436Z\nExpiration Time: 2023-07-18T13:07:41.371Z",
-      "address": "0xf75a0001f014204cecd8c84a838495352c06178b"
-    }
+    const authSig = await signAuthMessage();
     const symmetricKey = await this.litNodeClient.getEncryptionKey({
         accessControlConditions: accessControlConditions,
         toDecrypt: encryptedSymmetricKey,

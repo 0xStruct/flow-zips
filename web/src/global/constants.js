@@ -29,6 +29,7 @@ export const paths = {
   root: "/",
   marketplace: "/marketplace",
   adminMint: "/admin/mint",
+  mint: "/mint",
   profile: address => `/profiles/${address}`,
   profileItem: (address, id) => `/profiles/${address}/items/${id}`,
   apiMarketItemsList: params =>
@@ -47,7 +48,8 @@ export const paths = {
       publicConfig.chainEnv === CHAIN_ENV_TESTNET ? "testnet." : ""
     }flowscan.org/account/${address}`
   },
-  githubRepo: "https://github.com/onflow/kitty-items",
+  demoVideo: "https://vimeo.com/846063742",
+  githubRepo: "https://github.com/0xstruct/flow-zips",
 }
 
 export const flashMessages = {
