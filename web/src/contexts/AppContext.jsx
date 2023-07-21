@@ -43,6 +43,7 @@ export const AppContextProvider = ({children}) => {
   useEffect(
     () =>
       fcl.currentUser().subscribe(newUser => {
+        console.log("newUser: ", newUser)
         if (newUser?.loggedIn) {
           setCurrentUser(newUser)
           setFlashMessage(null)
