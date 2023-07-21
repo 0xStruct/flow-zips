@@ -1,4 +1,5 @@
 **DEMO VIDEO:** https://vimeo.com/846063742
+**DEMO APP:** https://flow-zips.vercel.app
 
 This project implements zips (which keep secrets in decentralized trustless manner) into FLOW NFTs.
 The codebase build upon typical FLOW NFT project, Kitty Items, to add zips into NFTs.
