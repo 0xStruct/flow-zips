@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3003",
+    "dev": "next dev -p 3001",
     "build": "next build && next export",
     "start": "next start",
     "test": "cypress run",
