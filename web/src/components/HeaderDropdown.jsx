@@ -12,7 +12,7 @@ const menuItemClasses = active =>
   } hover:bg-green text-sm group flex rounded-md items-center w-full px-2 py-1`
 
 export default function HeaderDropdown() {
-  const {currentUser, setFlashMessage, switchToAdminView} = useAppContext()
+  const {currentUser, setCurrentUser, setFlashMessage, switchToAdminView} = useAppContext()
 
   const address = currentUser.addr
 
@@ -20,6 +20,7 @@ export default function HeaderDropdown() {
 
   const signOut = () => {
     fcl.unauthenticate()
+    setCurrentUser(null)
     setFlashMessage(flashMessages.loggedOutSuccess)
   }
 

@@ -8,6 +8,7 @@ import {paths} from "src/global/constants"
 
 export const AppContext = createContext({
   currentUser: null,
+  setCurrentUser: _user => null,
   isAccountInitialized: null,
   checkIsAccountInitialized: () => null,
   showAdminLoginDialog: false,
@@ -102,6 +103,7 @@ export const AppContextProvider = ({children}) => {
 
   const value = {
     currentUser,
+    setCurrentUser,
     isAccountInitStateLoading,
     isAccountInitialized,
     checkIsAccountInitialized,
