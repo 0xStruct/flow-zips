@@ -26,6 +26,8 @@ export default function Minter() {
   //const [sell, tx] = useItemSale(item.itemID)
   const [zipMint, tx] = useZipMint()
 
+  const [btnDisabled, setBtnDisabled] = useState(false)
+
   const [value, setValue] = useState("10")
   const [name, setName] = useState("Spotify Topup")
   const [color, setColor] = useState("1")
@@ -51,6 +53,7 @@ export default function Minter() {
 
   const doZipMint = (e) => {
     e.preventDefault()
+    setBtnDisabled(true)
     zipMint(currentUser.addr.toString(), name, value, color)
   }
 
@@ -123,7 +126,7 @@ export default function Minter() {
                 value={color}
                 onChange={setColor}
               />
-              <Button onClick={doZipMint} roundedFull={true} className="mt-5">
+              <Button onClick={doZipMint} disabled={btnDisabled} roundedFull={true} className="mt-5">
                 Mint
               </Button>
             </form>

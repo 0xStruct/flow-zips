@@ -1,3 +1,4 @@
+import {useState, useEffect} from "react"
 import {useRouter} from "next/dist/client/router"
 import ListItemImage from "src/components/ListItemImage"
 import ListItemPageButtons from "src/components/ListItemPageButtons"
@@ -26,6 +27,8 @@ export default function KittyItem() {
     currentUser && item?.owner && item.owner === currentUser?.addr
   const isSellable = currentUserIsOwner && !listing
 
+  const [itemStatus, setItemStatus] = useState(item?.zipStatus || "blank")
+
   if(item) console.log(`item ${item.itemID}: `, item)
 
   return (
@@ -43,7 +46,7 @@ export default function KittyItem() {
               isStoreItem={true}
               size="lg"
               classes="item-image-container-hover"
-              zipStatus={item?.zipStatus}
+              zipStatus={itemStatus}
               zipValue={item?.zipValue}
               zipName={item?.zipName}
             />
@@ -56,12 +59,12 @@ export default function KittyItem() {
               >
                 {item.name}
               </h1>*/}
-              {item.zipStatus === "blank" && currentUserIsOwner &&
-                <ZipZip item={item} className="mt-4 mb-10" />
+              {itemStatus === "blank" && currentUserIsOwner &&
+                <ZipZip item={item} setItemStatus={setItemStatus} className="mt-4 mb-10" />
               }
 
-              {(item.zipStatus === "zipped" || item.zipStatus === "unzipped") && currentUserIsOwner &&
-                <ZipUnzip item={item} className="mt-4 mb-10" />
+              {(itemStatus === "zipped" || itemStatus === "unzipped") && currentUserIsOwner &&
+                <ZipUnzip item={item} setItemStatus={setItemStatus} className="mt-4 mb-10" />
               }
               
               <hr className="my-4"/>

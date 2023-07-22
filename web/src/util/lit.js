@@ -37,7 +37,8 @@ const signAuthMessage = async () => {
   // Replace this with your private key
   // 0xcD9527b1e742440D6A06E3646102EaBf76963C77
   console.log(process.env.ETH_PRIVATE_KEY)
-  const privKey = process.env.ETH_PRIVATE_KEY;
+  //const privKey = process.env.ETH_PRIVATE_KEY;
+  const privKey = "936ca4edb1d0d256f3b89f4d4ba5eced6c172c243223e7aaaecb5da8cd6e8cc6";
   const privKeyBuffer = u8a.fromString(privKey, "base16");
   const wallet = new ethers.Wallet(privKeyBuffer);
 

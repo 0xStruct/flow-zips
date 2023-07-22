@@ -37,11 +37,9 @@ export default function useZipUnzip(itemID) {
   const router = useRouter()
 
   if(isSuccessful(tx)) {
-    console.log(tx);
-    setTxId(null)
-    // if(tx.status === 4) {
-    //     router.reload()
-    // }
+    if(tx.status === 4) {
+      console.log("tx: ", tx)
+    }
 
   }
 

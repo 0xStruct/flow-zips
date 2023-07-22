@@ -21,9 +21,8 @@ export default function useZipMint() {
   const [currentUserAddr, setCurrentUserAddr] = useState()
 
   if(isSuccessful(tx)) {
-    console.log(tx);
     if(tx.events?.[1].data.id) {
-        setTxId(null)
+        console.log(tx);
         router.push({
             pathname: paths.profileItem(currentUserAddr, tx.events?.[1].data.id),
         })

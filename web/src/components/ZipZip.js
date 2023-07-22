@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Button from "src/components/Button"
 import { ITEM_RARITY_PRICE_MAP } from "src/global/constants"
 import { normalizedItemType } from "src/global/types"
@@ -10,20 +10,25 @@ import TransactionLoading from "./TransactionLoading"
 
 import lit from 'src/util/lit';
 
-export default function ZipZip({ item }) {
+export default function ZipZip({ item, setItemStatus }) {
   const [zipZip, tx] = useZipZip(item.itemID)
 
   const [secret, setSecret] = useState("")
-
-  const [encryptedText, setEncryptedText] = useState(null);
-  const [encryptedSymmetricKey, setEncryptedSymmetricKey] = useState("");
-  const [decryptedText, setDecryptedText] = useState("");
+  const [btnDisabled, setBtnDisabled] = useState(false)
 
   const doZipZip = async () => {
+    setBtnDisabled(true)
     let zipData = await encryptText()
-    console.log(zipData)
+    console.log("zipData: ", zipData)
     zipZip(item, zipData)
   }
+
+  useEffect(() => {
+    if(tx?.status === 4) {
+      console.log("tx success")
+      setItemStatus("zipped")
+    }
+  }, [tx])
 
   const encryptText = async () => {
     if (secret.length === 0) {
@@ -31,12 +36,7 @@ export default function ZipZip({ item }) {
       return;
     }
 
-    setDecryptedText("");
-
     const { encryptedString, encryptedSymmetricKey } = await lit.encryptText(secret);
-
-    setEncryptedText(encryptedString);    
-    console.log("encryptedString: ", encryptedString)
 
     const blobToDataURI = blob => {
       return new Promise((resolve, reject) => {
@@ -50,10 +50,8 @@ export default function ZipZip({ item }) {
       })
     }
     const encryptedDataURI = await blobToDataURI(encryptedString)
-    console.log("encryptedDataURI: ", encryptedDataURI)
-    //setEncryptedText(encryptedDataURI)
 
-    setEncryptedSymmetricKey(encryptedSymmetricKey);
+    console.log("encryptedDataURI: ", encryptedDataURI)
     console.log("encryptedSymmetricKey: ", encryptedSymmetricKey)
 
     return encryptedDataURI +"<zip>"+ encryptedSymmetricKey
@@ -95,21 +93,13 @@ export default function ZipZip({ item }) {
             />
             <Button
               type="button"
-              disabled={!secret}
+              disabled={!secret || btnDisabled}
               roundedFull={true}
               className="mt-5"
               onClick={doZipZip}
             >
               Zip 🤐
             </Button>
-            {/*<Button
-              type="button"
-              roundedFull={true}
-              className="mt-5"
-              onClick={encryptText}
-            >
-              Encrypt
-            </Button>*/}
           </form>
         )}
       </div>

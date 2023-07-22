@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Button from "src/components/Button"
 import { ITEM_RARITY_PRICE_MAP } from "src/global/constants"
 import { normalizedItemType } from "src/global/types"
@@ -10,13 +10,16 @@ import TransactionLoading from "./TransactionLoading"
 
 import lit from 'src/util/lit';
 
-export default function ZipUnzip({ item }) {
+export default function ZipUnzip({ item, setItemStatus }) {
   const [zipUnzip, tx] = useZipUnzip(item.itemID)
+
+  const [btnDisabled, setBtnDisabled] = useState(false)
 
   const [unzipped, setUnzipped] = useState(false)
   const [secret, setSecret] = useState("")
 
   const doZipUnzip = async () => {
+    setBtnDisabled(true)
     await zipUnzip(item)
     await decryptText()
   }
@@ -37,6 +40,7 @@ export default function ZipUnzip({ item }) {
       //setDecryptedText(decryptedString);
 
       setUnzipped(true)
+      setItemStatus("unzipped")
       setSecret(decryptedString)
     } catch (error) {
       alert(noAuthError);
@@ -81,6 +85,7 @@ export default function ZipUnzip({ item }) {
             {unzipped === false &&
                 <Button
                     type="button"
+                    disabled={btnDisabled}
                     roundedFull={true}
                     className="mt-5"
                     onClick={doZipUnzip}
