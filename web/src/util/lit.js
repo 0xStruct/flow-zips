@@ -2,7 +2,7 @@
 import * as LitJsSdk from "@lit-protocol/lit-node-client-nodejs";
 import * as u8a from "uint8arrays";
 import { ethers } from "ethers";
-import { SiweMessage } from "siwe";
+import { SiweErrorType, generateNonce, SiweMessage } from 'siwe';
 
 const client  = new LitJsSdk.LitNodeClientNodeJs({
   litNetwork: "serrano",
@@ -12,21 +12,27 @@ const client  = new LitJsSdk.LitNodeClientNodeJs({
 
 const chain = "ethereum";
 
-// QmU7A2mRmqJtvmGTscQVnszGYLy1u15ivgtYwSLoGG1qoD
+
+// QmYFJF215KXu8WmojNPW1nPGCMmThHF9jeEPqN18M2FCLM
 // immutable contract code in JS (uploaded to IPFS) is used by LIT Protocol nodes
-var accessControlConditions = [
-  {
-    contractAddress: "ipfs://QmU7A2mRmqJtvmGTscQVnszGYLy1u15ivgtYwSLoGG1qoD",
-    standardContractType: "LitAction",
-    chain: "ethereum",
-    method: "go",
-    parameters: ["150"],
-    returnValueTest: {
-      comparator: "=",
-      value: "true",
+const getAccessControlConditions = (zipId) => {
+  //console.log("btoa: ", btoa(`{"type":"UInt64","value":"${zipId}"}`))
+
+  return [
+    {
+      // ipfs address of the immutable Lit Action Code
+      contractAddress: "ipfs://QmYFJF215KXu8WmojNPW1nPGCMmThHF9jeEPqN18M2FCLM",
+      standardContractType: "LitAction",
+      chain: "ethereum", // not relevant
+      method: "go",
+      parameters: [btoa(`{"type":"UInt64","value":"${zipId}"}`)],
+      returnValueTest: {
+        comparator: "=",
+        value: "eyJ2YWx1ZSI6dHJ1ZSwidHlwZSI6IkJvb2wifQo=", // base64 of true output from Flow Access API
+      },
     },
-  },
-];
+  ];
+} 
 
 /**
  * Get auth signature using siwe
@@ -36,9 +42,7 @@ const signAuthMessage = async () => {
 
   // Replace this with your private key
   // 0xcD9527b1e742440D6A06E3646102EaBf76963C77
-  console.log(process.env.ETH_PRIVATE_KEY)
-  //const privKey = process.env.ETH_PRIVATE_KEY;
-  const privKey = "936ca4edb1d0d256f3b89f4d4ba5eced6c172c243223e7aaaecb5da8cd6e8cc6";
+  const privKey = process.env.ETH_PRIVATE_KEY;
   const privKeyBuffer = u8a.fromString(privKey, "base16");
   const wallet = new ethers.Wallet(privKeyBuffer);
 
@@ -51,8 +55,8 @@ const signAuthMessage = async () => {
       address: wallet.address,
       statement,
       uri: origin,
-      version: "1",
-      chainId: "1",
+      version: '1',
+      chainId: '1'
   });
 
   const messageToSign = siweMessage.prepareMessage();
@@ -81,7 +85,7 @@ class Lit {
     this.litNodeClient = client;
   }
 
-  async encryptText(text) {
+  async encryptText(text, zipId) {
     if (!this.litNodeClient) {
       await this.connect();
     }
@@ -93,7 +97,7 @@ class Lit {
     const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(text);
 
     const encryptedSymmetricKey = await this.litNodeClient.saveEncryptionKey({
-      accessControlConditions: accessControlConditions,
+      accessControlConditions: getAccessControlConditions(zipId),
       symmetricKey,
       authSig,
       chain,
@@ -105,7 +109,7 @@ class Lit {
     };
   }
 
-  async decryptText(encryptedString, encryptedSymmetricKey) {
+  async decryptText(encryptedString, encryptedSymmetricKey, zipId) {
     if (!this.litNodeClient) {
       await this.connect();
     }
@@ -115,7 +119,7 @@ class Lit {
     // authSig session does expire, so there needs an api call for authSig
     const authSig = await signAuthMessage();
     const symmetricKey = await this.litNodeClient.getEncryptionKey({
-        accessControlConditions: accessControlConditions,
+        accessControlConditions: getAccessControlConditions(zipId),
         toDecrypt: encryptedSymmetricKey,
         chain,
         authSig

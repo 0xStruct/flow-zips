@@ -36,7 +36,7 @@ export default function ZipZip({ item, setItemStatus }) {
       return;
     }
 
-    const { encryptedString, encryptedSymmetricKey } = await lit.encryptText(secret);
+    const { encryptedString, encryptedSymmetricKey } = await lit.encryptText(secret, item.itemID);
 
     const blobToDataURI = blob => {
       return new Promise((resolve, reject) => {

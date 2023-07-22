@@ -36,7 +36,7 @@ export default function ZipUnzip({ item, setItemStatus }) {
     const encryptedDataURIBlob = await (await fetch(encryptedDataURI)).blob(); 
 
     try {
-      const decryptedString = await lit.decryptText(encryptedDataURIBlob, encryptedSymmetricKey);
+      const decryptedString = await lit.decryptText(encryptedDataURIBlob, encryptedSymmetricKey, item.itemID);
       //setDecryptedText(decryptedString);
 
       setUnzipped(true)
