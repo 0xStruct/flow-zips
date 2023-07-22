@@ -1,11 +1,11 @@
 import FungibleToken from 0xFungibleToken
 import NonFungibleToken from 0xNonFungibleToken
-import KittyItems from 0xKittyItems
+import FlowZips from 0xFlowZips
 import NFTStorefrontV2 from 0xNFTStorefront
 
 pub fun hasItems(_ address: Address): Bool {
   return getAccount(address)
-    .getCapability<&KittyItems.Collection{NonFungibleToken.CollectionPublic, KittyItems.CollectionPublic}>(KittyItems.CollectionPublicPath)
+    .getCapability<&FlowZips.Collection{NonFungibleToken.CollectionPublic, FlowZips.CollectionPublic}>(FlowZips.CollectionPublicPath)
     .check()
 }
 
@@ -18,13 +18,13 @@ pub fun hasStorefront(_ address: Address): Bool {
 transaction {
   prepare(acct: AuthAccount) {
     if !hasItems(acct.address) {
-      if acct.borrow<&KittyItems.Collection>(from: KittyItems.CollectionStoragePath) == nil {
-        acct.save(<-KittyItems.createEmptyCollection(), to: KittyItems.CollectionStoragePath)
+      if acct.borrow<&FlowZips.Collection>(from: FlowZips.CollectionStoragePath) == nil {
+        acct.save(<-FlowZips.createEmptyCollection(), to: FlowZips.CollectionStoragePath)
       }
 
-      acct.unlink(KittyItems.CollectionPublicPath)
+      acct.unlink(FlowZips.CollectionPublicPath)
 
-      acct.link<&KittyItems.Collection{NonFungibleToken.CollectionPublic, KittyItems.CollectionPublic}>(KittyItems.CollectionPublicPath, target: KittyItems.CollectionStoragePath)
+      acct.link<&FlowZips.Collection{NonFungibleToken.CollectionPublic, FlowZips.CollectionPublic}>(FlowZips.CollectionPublicPath, target: FlowZips.CollectionStoragePath)
     }
 
     if !hasStorefront(acct.address) {

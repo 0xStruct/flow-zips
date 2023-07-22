@@ -1,7 +1,7 @@
 import NonFungibleToken from "../../contracts/NonFungibleToken.cdc"
 import MetadataViews from "../../contracts/MetadataViews.cdc"
 import NFTStorefrontV2 from "../../contracts/NFTStorefrontV2.cdc"
-import KittyItems from "../../contracts/KittyItems.cdc"
+import FlowZips from "../../contracts/FlowZips.cdc"
 
 pub struct ListingItem {
     pub let name: String
@@ -11,8 +11,8 @@ pub struct ListingItem {
 
     pub let itemID: UInt64
     pub let resourceID: UInt64
-    pub let kind: KittyItems.Kind
-    pub let rarity: KittyItems.Rarity
+    pub let kind: FlowZips.Kind
+    pub let rarity: FlowZips.Rarity
     pub let owner: Address
     pub let price: UFix64
 
@@ -23,8 +23,8 @@ pub struct ListingItem {
         description: String,
         itemID: UInt64,
         resourceID: UInt64,
-        kind: KittyItems.Kind,
-        rarity: KittyItems.Rarity,
+        kind: FlowZips.Kind,
+        rarity: FlowZips.Rarity,
         owner: Address,
         price: UFix64
     ) {
@@ -66,9 +66,9 @@ pub fun main(address: Address, listingResourceID: UInt64): ListingItem? {
             let itemID = details.nftID
             let itemPrice = details.salePrice
 
-            if let collection = getAccount(address).getCapability<&KittyItems.Collection{NonFungibleToken.CollectionPublic, KittyItems.CollectionPublic}>(KittyItems.CollectionPublicPath).borrow() {
+            if let collection = getAccount(address).getCapability<&FlowZips.Collection{NonFungibleToken.CollectionPublic, FlowZips.CollectionPublic}>(FlowZips.CollectionPublicPath).borrow() {
 
-                if let item = collection.borrowKittyItem(id: itemID) {
+                if let item = collection.borrowFlowZip(id: itemID) {
 
                     if let view = item.resolveView(Type<MetadataViews.Display>()) {
 

@@ -1,5 +1,5 @@
 import NonFungibleToken from "../../contracts/NonFungibleToken.cdc"
-import KittyItems from "../../contracts/KittyItems.cdc"
+import FlowZips from "../../contracts/FlowZips.cdc"
 import FungibleToken from "../../contracts/FungibleToken.cdc"
 import FlowToken from "../../contracts/FlowToken.cdc"
 //import MetadataViews from "../../contracts/MetadataViews.cdc"
@@ -11,7 +11,7 @@ transaction(recipient: Address, kind: UInt8, rarity: UInt8) {
     // Mint
 
     // local variable for storing the minter reference
-    let minter: &KittyItems.NFTMinter
+    let minter: &FlowZips.NFTMinter
 
     /// Reference to the receiver's collection
     let recipientCollectionRef: &{NonFungibleToken.CollectionPublic}
@@ -21,22 +21,22 @@ transaction(recipient: Address, kind: UInt8, rarity: UInt8) {
 
     // List
     let flowReceiver: Capability<&FlowToken.Vault{FungibleToken.Receiver}>
-    let kittyItemsProvider: Capability<&KittyItems.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>
+    let kittyItemsProvider: Capability<&FlowZips.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>
     let storefront: &NFTStorefrontV2.Storefront
     var saleCuts: [NFTStorefrontV2.SaleCut]
     var marketplacesCapability: [Capability<&AnyResource{FungibleToken.Receiver}>]
 
     prepare(signer: AuthAccount) {
         // Prepare to mint
-        self.mintingIDBefore = KittyItems.totalSupply
+        self.mintingIDBefore = FlowZips.totalSupply
 
         // Borrow a reference to the NFTMinter resource in storage
-        self.minter = signer.borrow<&KittyItems.NFTMinter>(from: KittyItems.MinterStoragePath)
+        self.minter = signer.borrow<&FlowZips.NFTMinter>(from: FlowZips.MinterStoragePath)
             ?? panic("Could not borrow a reference to the NFT minter")
 
         // Borrow the recipient's public NFT collection reference
         self.recipientCollectionRef = getAccount(recipient)
-            .getCapability(KittyItems.CollectionPublicPath)
+            .getCapability(FlowZips.CollectionPublicPath)
             .borrow<&{NonFungibleToken.CollectionPublic}>()
             ?? panic("Could not get receiver reference to the NFT Collection")
 
@@ -53,13 +53,13 @@ transaction(recipient: Address, kind: UInt8, rarity: UInt8) {
         assert(self.flowReceiver.borrow() != nil, message: "Missing or mis-typed FLOW receiver")
 
         // Check if the Provider capability exists or not if `no` then create a new link for the same.
-        if !signer.getCapability<&KittyItems.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(kittyItemsCollectionProviderPrivatePath)!.check() {
-            signer.link<&KittyItems.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(kittyItemsCollectionProviderPrivatePath, target: KittyItems.CollectionStoragePath)
+        if !signer.getCapability<&FlowZips.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(kittyItemsCollectionProviderPrivatePath)!.check() {
+            signer.link<&FlowZips.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(kittyItemsCollectionProviderPrivatePath, target: FlowZips.CollectionStoragePath)
         }
 
-        self.kittyItemsProvider = signer.getCapability<&KittyItems.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(kittyItemsCollectionProviderPrivatePath)!
+        self.kittyItemsProvider = signer.getCapability<&FlowZips.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(kittyItemsCollectionProviderPrivatePath)!
 
-        assert(self.kittyItemsProvider.borrow() != nil, message: "Missing or mis-typed KittyItems.Collection provider")
+        assert(self.kittyItemsProvider.borrow() != nil, message: "Missing or mis-typed FlowZips.Collection provider")
 
         self.storefront = signer.borrow<&NFTStorefrontV2.Storefront>(from: NFTStorefrontV2.StorefrontStoragePath)
             ?? panic("Missing or mis-typed NFTStorefrontV2 Storefront")
@@ -67,8 +67,8 @@ transaction(recipient: Address, kind: UInt8, rarity: UInt8) {
 
     execute {
         // Execute to mint
-        let kindValue = KittyItems.Kind(rawValue: kind) ?? panic("invalid kind")
-        let rarityValue = KittyItems.Rarity(rawValue: rarity) ?? panic("invalid rarity")
+        let kindValue = FlowZips.Kind(rawValue: kind) ?? panic("invalid kind")
+        let rarityValue = FlowZips.Rarity(rawValue: rarity) ?? panic("invalid rarity")
 
         // mint the NFT and deposit it to the recipient's collection
         self.minter.mintNFT(
@@ -79,7 +79,7 @@ transaction(recipient: Address, kind: UInt8, rarity: UInt8) {
         )
 
         var totalRoyaltyCut = 0.0
-        let effectiveSaleItemPrice = KittyItems.getItemPrice(rarity: rarityValue) // commission amount is 0
+        let effectiveSaleItemPrice = FlowZips.getItemPrice(rarity: rarityValue) // commission amount is 0
 
         // Skip this step - Check whether the NFT implements the MetadataResolver or not.
 
@@ -92,8 +92,8 @@ transaction(recipient: Address, kind: UInt8, rarity: UInt8) {
         // Execute to create listing
         self.storefront.createListing(
             nftProviderCapability: self.kittyItemsProvider,
-            nftType: Type<@KittyItems.NFT>(),
-            nftID: KittyItems.totalSupply - 1,
+            nftType: Type<@FlowZips.NFT>(),
+            nftID: FlowZips.totalSupply - 1,
             salePaymentVaultType: Type<@FlowToken.Vault>(),
             saleCuts: self.saleCuts,
             marketplacesCapability: self.marketplacesCapability.length == 0 ? nil : self.marketplacesCapability,
@@ -105,7 +105,7 @@ transaction(recipient: Address, kind: UInt8, rarity: UInt8) {
 
     post {
         self.recipientCollectionRef.getIDs().contains(self.mintingIDBefore): "The next NFT ID should have been minted and delivered"
-        KittyItems.totalSupply == self.mintingIDBefore + 1: "The total supply should have been increased by 1"
+        FlowZips.totalSupply == self.mintingIDBefore + 1: "The total supply should have been increased by 1"
     }
 }
  

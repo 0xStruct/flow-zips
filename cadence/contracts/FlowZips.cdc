@@ -1,10 +1,10 @@
 import NonFungibleToken from "./NonFungibleToken.cdc"
 import MetadataViews from "./MetadataViews.cdc"
 
-pub contract KittyItems: NonFungibleToken {
+pub contract FlowZips: NonFungibleToken {
 
     // totalSupply
-    // The total number of KittyItems that have been minted
+    // The total number of FlowZips that have been minted
     //
     pub var totalSupply: UInt64
 
@@ -129,22 +129,22 @@ pub contract KittyItems: NonFungibleToken {
         pub let id: UInt64
 
         pub fun name(): String {
-            return KittyItems.rarityToString(self.rarity)
+            return FlowZips.rarityToString(self.rarity)
                 .concat(" ")
-                .concat(KittyItems.kindToString(self.kind))
+                .concat(FlowZips.kindToString(self.kind))
         }
         
         pub fun description(): String {
             return "A "
-                .concat(KittyItems.rarityToString(self.rarity).toLower())
+                .concat(FlowZips.rarityToString(self.rarity).toLower())
                 .concat(" ")
-                .concat(KittyItems.kindToString(self.kind).toLower())
+                .concat(FlowZips.kindToString(self.kind).toLower())
                 .concat(" with serial number ")
                 .concat(self.id.toString())
         }
 
         pub fun imageCID(): String {
-            return KittyItems.images[self.kind]![self.rarity]!
+            return FlowZips.images[self.kind]![self.rarity]!
         }
 
         pub fun thumbnail(): MetadataViews.IPFSFile {
@@ -212,7 +212,7 @@ pub contract KittyItems: NonFungibleToken {
                 case Type<MetadataViews.Editions>():
                     // There is no max number of NFTs that can be minted from this contract
                     // so the max edition field value is set to nil
-                    let editionInfo = MetadataViews.Edition(name: "KittyItems NFT Edition", number: self.id, max: nil)
+                    let editionInfo = MetadataViews.Edition(name: "FlowZips NFT Edition", number: self.id, max: nil)
                     let editionList: [MetadataViews.Edition] = [editionInfo]
                     return MetadataViews.Editions(
                         editionList
@@ -229,14 +229,14 @@ pub contract KittyItems: NonFungibleToken {
                     return MetadataViews.ExternalURL("https://kitty-items.flow.com/".concat(self.id.toString()))
                 case Type<MetadataViews.NFTCollectionData>():
                     return MetadataViews.NFTCollectionData(
-                        storagePath: KittyItems.CollectionStoragePath,
-                        publicPath: KittyItems.CollectionPublicPath,
-                        providerPath: /private/KittyItemsCollection,
-                        publicCollection: Type<&KittyItems.Collection{KittyItems.CollectionPublic}>(),
-                        publicLinkedType: Type<&KittyItems.Collection{KittyItems.CollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(),
-                        providerLinkedType: Type<&KittyItems.Collection{KittyItems.CollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Provider,MetadataViews.ResolverCollection}>(),
+                        storagePath: FlowZips.CollectionStoragePath,
+                        publicPath: FlowZips.CollectionPublicPath,
+                        providerPath: /private/FlowZipsCollection,
+                        publicCollection: Type<&FlowZips.Collection{FlowZips.CollectionPublic}>(),
+                        publicLinkedType: Type<&FlowZips.Collection{FlowZips.CollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(),
+                        providerLinkedType: Type<&FlowZips.Collection{FlowZips.CollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Provider,MetadataViews.ResolverCollection}>(),
                         createEmptyCollectionFunction: (fun (): @NonFungibleToken.Collection {
-                            return <-KittyItems.createEmptyCollection()
+                            return <-FlowZips.createEmptyCollection()
                         })
                     )
                 case Type<MetadataViews.NFTCollectionDisplay>():
@@ -247,7 +247,7 @@ pub contract KittyItems: NonFungibleToken {
                         mediaType: "image/svg+xml"
                     )
                     return MetadataViews.NFTCollectionDisplay(
-                        name: "The KittyItems Collection",
+                        name: "The FlowZips Collection",
                         description: "This collection is used as an example to help you develop your next Flow NFT.",
                         externalURL: MetadataViews.ExternalURL("https://kitty-items.flow.com/"),
                         squareImage: media,
@@ -304,33 +304,33 @@ pub contract KittyItems: NonFungibleToken {
         }
     }
 
-    // This is the interface that users can cast their KittyItems Collection as
-    // to allow others to deposit KittyItems into their Collection. It also allows for reading
-    // the details of KittyItems in the Collection.
+    // This is the interface that users can cast their FlowZips Collection as
+    // to allow others to deposit FlowZips into their Collection. It also allows for reading
+    // the details of FlowZips in the Collection.
     pub resource interface CollectionPublic {
         pub fun deposit(token: @NonFungibleToken.NFT)
         pub fun getIDs(): [UInt64]
         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT
-        pub fun borrowKittyItem(id: UInt64): &KittyItems.NFT? {
+        pub fun borrowFlowZip(id: UInt64): &FlowZips.NFT? {
             // If the result isn't nil, the id of the returned reference
             // should be the same as the argument to the function
             post {
                 (result == nil) || (result?.id == id):
-                    "Cannot borrow KittyItem reference: The ID of the returned reference is incorrect"
+                    "Cannot borrow FlowZip reference: The ID of the returned reference is incorrect"
             }
         }
-        pub fun borrowNFTPublic(id: UInt64): &KittyItems.NFT{KittyItems.NFTPublic}? {
+        pub fun borrowNFTPublic(id: UInt64): &FlowZips.NFT{FlowZips.NFTPublic}? {
             // If the result isn't nil, the id of the returned reference
             // should be the same as the argument to the function
             post {
                 (result == nil) || (result?.id == id):
-                    "Cannot borrow KittyItem reference: The ID of the returned reference is incorrect"
+                    "Cannot borrow FlowZip reference: The ID of the returned reference is incorrect"
             }
         }
     }
 
     pub resource interface CollectionOwner {
-        pub fun borrowNFTOwner(id: UInt64): &KittyItems.NFT? {
+        pub fun borrowNFTOwner(id: UInt64): &FlowZips.NFT? {
             // If the result isn't nil, the id of the returned reference
             // should be the same as the argument to the function
             post {
@@ -343,7 +343,7 @@ pub contract KittyItems: NonFungibleToken {
     }
 
     // Collection
-    // A collection of KittyItem NFTs owned by an account
+    // A collection of FlowZip NFTs owned by an account
     //
     pub resource Collection: CollectionPublic, CollectionOwner, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
         // dictionary of NFT conforming tokens
@@ -371,7 +371,7 @@ pub contract KittyItems: NonFungibleToken {
         // takes a NFT and adds it to the collections dictionary
         // and adds the ID to the id array
         pub fun deposit(token: @NonFungibleToken.NFT) {
-            let token <- token as! @KittyItems.NFT
+            let token <- token as! @FlowZips.NFT
 
             let id: UInt64 = token.id
 
@@ -379,7 +379,7 @@ pub contract KittyItems: NonFungibleToken {
             let oldToken <- self.ownedNFTs[id] <- token
 
             // update the holders list
-            KittyItems.holders[id] = self.owner?.address
+            FlowZips.holders[id] = self.owner?.address
 
             emit Deposit(id: id, to: self.owner?.address)
 
@@ -399,16 +399,16 @@ pub contract KittyItems: NonFungibleToken {
             return (&self.ownedNFTs[id] as &NonFungibleToken.NFT?)!
         }
 
-        // borrowKittyItem
-        // Gets a reference to an NFT in the collection as a KittyItem,
+        // borrowFlowZip
+        // Gets a reference to an NFT in the collection as a FlowZip,
         // exposing all of its fields (including the typeID & rarityID).
-        // This is safe as there are no functions that can be called on the KittyItem.
+        // This is safe as there are no functions that can be called on the FlowZip.
         //
-        pub fun borrowKittyItem(id: UInt64): &KittyItems.NFT? {
+        pub fun borrowFlowZip(id: UInt64): &FlowZips.NFT? {
             if self.ownedNFTs[id] != nil {
                 // Create an authorized reference to allow downcasting
                 let ref = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
-                return ref as! &KittyItems.NFT
+                return ref as! &FlowZips.NFT
             } else {
                 return nil
             }    
@@ -416,17 +416,17 @@ pub contract KittyItems: NonFungibleToken {
 
         pub fun borrowViewResolver(id: UInt64): &AnyResource{MetadataViews.Resolver} {
             let nft = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
-            let kittyItem = nft as! &KittyItems.NFT
-            return kittyItem as &AnyResource{MetadataViews.Resolver}
+            let flowZip = nft as! &FlowZips.NFT
+            return flowZip as &AnyResource{MetadataViews.Resolver}
         }
 
         // Public
-        pub fun borrowNFTPublic(id: UInt64): &KittyItems.NFT{KittyItems.NFTPublic}? {
+        pub fun borrowNFTPublic(id: UInt64): &FlowZips.NFT{FlowZips.NFTPublic}? {
             if self.ownedNFTs[id] != nil {
                 // Create an authorized reference to allow downcasting
                 let nft = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
-                let kittyItem = nft as! &KittyItems.NFT
-                return kittyItem as &KittyItems.NFT{KittyItems.NFTPublic}  
+                let flowZip = nft as! &FlowZips.NFT
+                return flowZip as &FlowZips.NFT{FlowZips.NFTPublic}  
             } else {
                 return nil
             }          
@@ -439,11 +439,11 @@ pub contract KittyItems: NonFungibleToken {
 
         // Owner only
         // Zip related functions
-        pub fun borrowNFTOwner(id: UInt64): &KittyItems.NFT? {
+        pub fun borrowNFTOwner(id: UInt64): &FlowZips.NFT? {
             if self.ownedNFTs[id] != nil {
                 // Create an authorized reference to allow downcasting
                 let ref = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
-                return ref as! &KittyItems.NFT
+                return ref as! &FlowZips.NFT
             } else {
                 return nil
             }    
@@ -495,8 +495,8 @@ pub contract KittyItems: NonFungibleToken {
         metadata["zipValue"] = zipValue
 
         // create a new NFT
-        var newNFT <- create KittyItems.NFT(
-            id: KittyItems.totalSupply,
+        var newNFT <- create FlowZips.NFT(
+            id: FlowZips.totalSupply,
             royalties: royalties,
             metadata: metadata,
             kind: kind, 
@@ -507,12 +507,12 @@ pub contract KittyItems: NonFungibleToken {
         recipient.deposit(token: <-newNFT)
 
         emit Minted(
-            id: KittyItems.totalSupply,
+            id: FlowZips.totalSupply,
             kind: kind.rawValue,
             rarity: rarity.rawValue,
         )
 
-        KittyItems.totalSupply = KittyItems.totalSupply + 1
+        FlowZips.totalSupply = FlowZips.totalSupply + 1
     }
 
     // NFTMinter
@@ -541,8 +541,8 @@ pub contract KittyItems: NonFungibleToken {
             // metadata["foo"] = "bar"
 
             // create a new NFT
-            var newNFT <- create KittyItems.NFT(
-                id: KittyItems.totalSupply,
+            var newNFT <- create FlowZips.NFT(
+                id: FlowZips.totalSupply,
                 royalties: royalties,
                 metadata: metadata,
                 kind: kind, 
@@ -553,19 +553,19 @@ pub contract KittyItems: NonFungibleToken {
             recipient.deposit(token: <-newNFT)
 
             emit Minted(
-                id: KittyItems.totalSupply,
+                id: FlowZips.totalSupply,
                 kind: kind.rawValue,
                 rarity: rarity.rawValue,
             )
 
-            KittyItems.totalSupply = KittyItems.totalSupply + UInt64(1)
+            FlowZips.totalSupply = FlowZips.totalSupply + UInt64(1)
         }
 
         // Update NFT images for new type
         pub fun addNewImagesForKind(from: AuthAccount, newImages: {Kind: {Rarity: String}}) {
-            let kindValue = KittyItems.images.containsKey(newImages.keys[0]) 
+            let kindValue = FlowZips.images.containsKey(newImages.keys[0]) 
             if(!kindValue) {
-                KittyItems.images.insert(key: newImages.keys[0], newImages.values[0])
+                FlowZips.images.insert(key: newImages.keys[0], newImages.values[0])
                 emit ImagesAddedForNewKind(
                     kind: newImages.keys[0].rawValue,
                 )
@@ -576,19 +576,19 @@ pub contract KittyItems: NonFungibleToken {
     }
 
     // fetch
-    // Get a reference to a KittyItem from an account's Collection, if available.
-    // If an account does not have a KittyItems.Collection, panic.
+    // Get a reference to a FlowZip from an account's Collection, if available.
+    // If an account does not have a FlowZips.Collection, panic.
     // If it has a collection but does not contain the itemID, return nil.
     // If it has a collection and that collection contains the itemID, return a reference to that.
     //
-    pub fun fetch(_ from: Address, itemID: UInt64): &KittyItems.NFT? {
+    pub fun fetch(_ from: Address, itemID: UInt64): &FlowZips.NFT? {
         let collection = getAccount(from)
-            .getCapability(KittyItems.CollectionPublicPath)!
-            .borrow<&KittyItems.Collection{KittyItems.CollectionPublic}>()
+            .getCapability(FlowZips.CollectionPublicPath)!
+            .borrow<&FlowZips.Collection{FlowZips.CollectionPublic}>()
             ?? panic("Couldn't get collection")
-        // We trust KittyItems.Collection.borowKittyItem to get the correct itemID
+        // We trust FlowZips.Collection.borowFlowZip to get the correct itemID
         // (it checks it before returning it).
-        return collection.borrowKittyItem(id: itemID)
+        return collection.borrowFlowZip(id: itemID)
     }
 
     // initializer
@@ -651,7 +651,7 @@ pub contract KittyItems: NonFungibleToken {
         self.account.save(<-collection, to: self.CollectionStoragePath)
 
         // Create a public capability for the collection
-        self.account.link<&KittyItems.Collection{NonFungibleToken.CollectionPublic, KittyItems.CollectionPublic, MetadataViews.ResolverCollection}>(
+        self.account.link<&FlowZips.Collection{NonFungibleToken.CollectionPublic, FlowZips.CollectionPublic, MetadataViews.ResolverCollection}>(
             self.CollectionPublicPath,
             target: self.CollectionStoragePath
         )

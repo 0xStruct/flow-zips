@@ -59,7 +59,7 @@ export default function AdminLogInDialog() {
               onChange={setPassword}
             />
             <div className="text-red mt-2 text-sm">
-              {passwordError && `That's an incorrect password. Try KittyItems.`}
+              {passwordError && `That's an incorrect password. Try FlowZips.`}
             </div>
           </div>
 

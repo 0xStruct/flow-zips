@@ -1,8 +1,8 @@
 import NonFungibleToken from 0xNonFungibleToken
-import KittyItems from 0xKittyItems
+import FlowZips from 0xFlowZips
 
 pub fun main(address: Address): [UInt64] {
-  if let collection = getAccount(address).getCapability<&KittyItems.Collection{NonFungibleToken.CollectionPublic, KittyItems.CollectionPublic}>(KittyItems.CollectionPublicPath).borrow() {
+  if let collection = getAccount(address).getCapability<&FlowZips.Collection{NonFungibleToken.CollectionPublic, FlowZips.CollectionPublic}>(FlowZips.CollectionPublicPath).borrow() {
     return collection.getIDs()
   }
 

@@ -2,7 +2,7 @@ import * as fcl from "@onflow/fcl"
 import {useRouter} from "next/router"
 import {paths} from "src/global/constants"
 import analytics, {event} from "src/global/analytics"
-import useAppContext from "src/hooks/useAppContext"
+import useAppContext from "src/hooks/useAppContext" 
 
 export default function useLogin() {
   const router = useRouter()

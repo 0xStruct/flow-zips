@@ -1,31 +1,31 @@
 import FungibleToken from "../../contracts/FungibleToken.cdc"
 import NonFungibleToken from "../../contracts/NonFungibleToken.cdc"
 import FlowToken from "../../contracts/FlowToken.cdc"
-import KittyItems from "../../contracts/KittyItems.cdc"
+import FlowZips from "../../contracts/FlowZips.cdc"
 import NFTStorefrontV2 from "../../contracts/NFTStorefrontV2.cdc"
 
-pub fun getOrCreateCollection(account: AuthAccount): &KittyItems.Collection{NonFungibleToken.Receiver} {
-    if let collectionRef = account.borrow<&KittyItems.Collection>(from: KittyItems.CollectionStoragePath) {
+pub fun getOrCreateCollection(account: AuthAccount): &FlowZips.Collection{NonFungibleToken.Receiver} {
+    if let collectionRef = account.borrow<&FlowZips.Collection>(from: FlowZips.CollectionStoragePath) {
         return collectionRef
     }
 
     // create a new empty collection
-    let collection <- KittyItems.createEmptyCollection() as! @KittyItems.Collection
+    let collection <- FlowZips.createEmptyCollection() as! @FlowZips.Collection
 
-    let collectionRef = &collection as &KittyItems.Collection
+    let collectionRef = &collection as &FlowZips.Collection
     
     // save it to the account
-    account.save(<-collection, to: KittyItems.CollectionStoragePath)
+    account.save(<-collection, to: FlowZips.CollectionStoragePath)
 
     // create a public capability for the collection
-    account.link<&KittyItems.Collection{NonFungibleToken.CollectionPublic, KittyItems.CollectionPublic}>(KittyItems.CollectionPublicPath, target: KittyItems.CollectionStoragePath)
+    account.link<&FlowZips.Collection{NonFungibleToken.CollectionPublic, FlowZips.CollectionPublic}>(FlowZips.CollectionPublicPath, target: FlowZips.CollectionStoragePath)
 
     return collectionRef
 }
 
 transaction(listingResourceID: UInt64, storefrontAddress: Address) {
     let paymentVault: @FungibleToken.Vault
-    let kittyItemsCollection: &KittyItems.Collection{NonFungibleToken.Receiver}
+    let kittyItemsCollection: &FlowZips.Collection{NonFungibleToken.Receiver}
     let storefront: &NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}
     let listing: &NFTStorefrontV2.Listing{NFTStorefrontV2.ListingPublic}
 

@@ -12,7 +12,7 @@
     "port": 8701
   },
   "contracts": {
-    "KittyItems": "./cadence/contracts/KittyItems.cdc",
+    "FlowZips": "./cadence/contracts/FlowZips.cdc",
     "NFTStorefrontV2": {
       "source": "./cadence/contracts/NFTStorefrontV2.cdc",
       "aliases": {
@@ -59,7 +59,7 @@
   },
   "deployments": {
     "emulator": {
-      "emulator-account": ["KittyItems", "NFTStorefrontV2", "NonFungibleToken", "MetadataViews"]
+      "emulator-account": ["FlowZips", "NFTStorefrontV2", "NonFungibleToken", "MetadataViews"]
     }
   }
 }

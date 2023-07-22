@@ -1,5 +1,5 @@
 import NonFungibleToken from "../../contracts/NonFungibleToken.cdc"
-import KittyItems from "../../contracts/KittyItems.cdc"
+import FlowZips from "../../contracts/FlowZips.cdc"
 import MetadataViews from "../../contracts/MetadataViews.cdc"
 
 // This transaction configures an account to hold Kitty Items.
@@ -7,16 +7,16 @@ import MetadataViews from "../../contracts/MetadataViews.cdc"
 transaction {
     prepare(signer: AuthAccount) {
         // if the account doesn't already have a collection
-        if signer.borrow<&KittyItems.Collection>(from: KittyItems.CollectionStoragePath) == nil {
+        if signer.borrow<&FlowZips.Collection>(from: FlowZips.CollectionStoragePath) == nil {
 
             // create a new empty collection
-            let collection <- KittyItems.createEmptyCollection()
+            let collection <- FlowZips.createEmptyCollection()
             
             // save it to the account
-            signer.save(<-collection, to: KittyItems.CollectionStoragePath)
+            signer.save(<-collection, to: FlowZips.CollectionStoragePath)
 
             // create a public capability for the collection
-            signer.link<&KittyItems.Collection{NonFungibleToken.CollectionPublic, KittyItems.CollectionPublic, MetadataViews.ResolverCollection}>(KittyItems.CollectionPublicPath, target: KittyItems.CollectionStoragePath)
+            signer.link<&FlowZips.Collection{NonFungibleToken.CollectionPublic, FlowZips.CollectionPublic, MetadataViews.ResolverCollection}>(FlowZips.CollectionPublicPath, target: FlowZips.CollectionStoragePath)
         }
         
     }

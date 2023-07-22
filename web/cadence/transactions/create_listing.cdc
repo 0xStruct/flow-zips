@@ -1,7 +1,7 @@
 import FungibleToken from 0xFungibleToken
 import NonFungibleToken from 0xNonFungibleToken
 import FlowToken from 0xFlowToken
-import KittyItems from 0xKittyItems
+import FlowZips from 0xKittyItems
 import NFTStorefrontV2 from 0xNFTStorefront
 
 pub fun getOrCreateStorefront(account: AuthAccount): &NFTStorefrontV2.Storefront {
@@ -23,7 +23,7 @@ pub fun getOrCreateStorefront(account: AuthAccount): &NFTStorefrontV2.Storefront
 transaction(saleItemID: UInt64, saleItemPrice: UFix64) {
 
   let flowReceiver: Capability<&FlowToken.Vault{FungibleToken.Receiver}>
-  let kittyItemsProvider: Capability<&KittyItems.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>
+  let kittyItemsProvider: Capability<&FlowZips.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>
   let storefront: &NFTStorefrontV2.Storefront
 
   prepare(account: AuthAccount) {
@@ -34,13 +34,13 @@ transaction(saleItemID: UInt64, saleItemPrice: UFix64) {
 
     assert(self.flowReceiver.borrow() != nil, message: "Missing or mis-typed FLOW receiver")
 
-    if !account.getCapability<&KittyItems.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(kittyItemsCollectionProviderPrivatePath)!.check() {
-      account.link<&KittyItems.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(kittyItemsCollectionProviderPrivatePath, target: KittyItems.CollectionStoragePath)
+    if !account.getCapability<&FlowZips.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(kittyItemsCollectionProviderPrivatePath)!.check() {
+      account.link<&FlowZips.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(kittyItemsCollectionProviderPrivatePath, target: FlowZips.CollectionStoragePath)
     }
 
-    self.kittyItemsProvider = account.getCapability<&KittyItems.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(kittyItemsCollectionProviderPrivatePath)!
+    self.kittyItemsProvider = account.getCapability<&FlowZips.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>(kittyItemsCollectionProviderPrivatePath)!
 
-    assert(self.kittyItemsProvider.borrow() != nil, message: "Missing or mis-typed KittyItems.Collection provider")
+    assert(self.kittyItemsProvider.borrow() != nil, message: "Missing or mis-typed FlowZips.Collection provider")
 
     self.storefront = getOrCreateStorefront(account: account)
   }
@@ -53,7 +53,7 @@ transaction(saleItemID: UInt64, saleItemPrice: UFix64) {
 
     self.storefront.createListing(
       nftProviderCapability: self.kittyItemsProvider,
-      nftType: Type<@KittyItems.NFT>(),
+      nftType: Type<@FlowZips.NFT>(),
       nftID: saleItemID,
       salePaymentVaultType: Type<@FlowToken.Vault>(),
       saleCuts: [saleCut],

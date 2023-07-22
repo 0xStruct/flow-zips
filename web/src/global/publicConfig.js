@@ -50,9 +50,9 @@ if (!flowAddress) throw new Error("Missing NEXT_PUBLIC_FLOW_ADDRESS")
 const avatarUrl = process.env.NEXT_PUBLIC_AVATAR_URL
 if (!avatarUrl) throw new Error("Missing NEXT_PUBLIC_AVATAR_URL")
 
-const contractKittyItems = process.env.NEXT_PUBLIC_CONTRACT_KITTY_ITEMS
-if (!contractKittyItems)
-  throw new Error("Missing NEXT_PUBLIC_CONTRACT_KITTY_ITEMS")
+const contractFlowZips = process.env.NEXT_PUBLIC_CONTRACT_FLOW_ZIPS
+if (!contractFlowZips)
+  throw new Error("Missing NEXT_PUBLIC_CONTRACT_FLOW_ZIPS")
 
 const contractNftStorefront = process.env.NEXT_PUBLIC_CONTRACT_NFT_STOREFRONT
 if (!contractNftStorefront)
@@ -83,7 +83,7 @@ const publicConfig = {
   contractNonFungibleToken,
   contractMetadataViews,
   contractFlowToken,
-  contractKittyItems,
+  contractFlowZips,
   contractNftStorefront,
   gaTrackingId,
   mixpanelToken,
