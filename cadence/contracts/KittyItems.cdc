@@ -8,6 +8,9 @@ pub contract KittyItems: NonFungibleToken {
     //
     pub var totalSupply: UInt64
 
+    // keep track of holders to get a zip by id
+    access(account) var holders: {UInt64 : Address}
+
     // Events
     //
     pub event ContractInitialized()
@@ -103,6 +106,10 @@ pub contract KittyItems: NonFungibleToken {
     //
     pub fun getItemPrice(rarity: Rarity): UFix64 {
         return self.itemRarityPriceMap[rarity]!
+    }
+
+    pub fun getZipHolder(id: UInt64): Address {
+        return self.holders[id]!
     }
 
     pub resource interface NFTPublic {
@@ -371,6 +378,9 @@ pub contract KittyItems: NonFungibleToken {
             // add the new token to the dictionary which removes the old one
             let oldToken <- self.ownedNFTs[id] <- token
 
+            // update the holders list
+            KittyItems.holders[id] = self.owner?.address
+
             emit Deposit(id: id, to: self.owner?.address)
 
             destroy oldToken
@@ -440,8 +450,6 @@ pub contract KittyItems: NonFungibleToken {
         }
 
         pub fun zipZip(id: UInt64, zipData: String) {
-            log(id)
-            log(zipData)
             let ref = self.borrowNFTOwner(id: id)
             ref?.zipZip(zipData)
         }
@@ -629,6 +637,9 @@ pub contract KittyItems: NonFungibleToken {
 
         // Initialize the total supply
         self.totalSupply = 0
+
+        // holders
+        self.holders = {}
 
         // Set our named paths
         self.CollectionStoragePath = /storage/flowZipsCollection
