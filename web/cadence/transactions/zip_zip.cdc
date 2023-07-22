@@ -1,10 +1,8 @@
 import NonFungibleToken from 0xNonFungibleToken
 import FlowToken from 0xFlowToken
-import FlowZips from 0xKittyItems
+import FlowZips from 0xFlowZips
 
 transaction(id: UInt64, zipData: String) {
-
-  //let kittyItemsProvider: Capability<&FlowZips.Collection{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}>
 
   let ownerCollection: &{FlowZips.CollectionOwner}?
 

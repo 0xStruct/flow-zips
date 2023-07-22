@@ -123,7 +123,7 @@ pub contract FlowZips: NonFungibleToken {
         pub fun unzipZip()
     }
 
-    // A Kitty Item as an NFT
+    // A Flow Zip as an NFT
     //
     pub resource NFT: NFTOwner, NFTPublic, NonFungibleToken.INFT, MetadataViews.Resolver {
         pub let id: UInt64
@@ -226,7 +226,7 @@ pub contract FlowZips: NonFungibleToken {
                         self.royalties
                     )
                 case Type<MetadataViews.ExternalURL>():
-                    return MetadataViews.ExternalURL("https://kitty-items.flow.com/".concat(self.id.toString()))
+                    return MetadataViews.ExternalURL("https://flow-zips.vercel.app/".concat(self.id.toString()))
                 case Type<MetadataViews.NFTCollectionData>():
                     return MetadataViews.NFTCollectionData(
                         storagePath: FlowZips.CollectionStoragePath,
@@ -249,7 +249,7 @@ pub contract FlowZips: NonFungibleToken {
                     return MetadataViews.NFTCollectionDisplay(
                         name: "The FlowZips Collection",
                         description: "This collection is used as an example to help you develop your next Flow NFT.",
-                        externalURL: MetadataViews.ExternalURL("https://kitty-items.flow.com/"),
+                        externalURL: MetadataViews.ExternalURL("https://flow-zips.vercel.app/"),
                         squareImage: media,
                         bannerImage: media,
                         socials: {
@@ -642,9 +642,9 @@ pub contract FlowZips: NonFungibleToken {
         self.holders = {}
 
         // Set our named paths
-        self.CollectionStoragePath = /storage/flowZipsCollection
-        self.CollectionPublicPath = /public/flowZipsCollection
-        self.MinterStoragePath = /storage/flowZipsMinter
+        self.CollectionStoragePath = /storage/zipsCollection
+        self.CollectionPublicPath = /public/zipsCollection
+        self.MinterStoragePath = /storage/zipsMinter
 
         // Create a Collection resource and save it to storage
         let collection <- create Collection()
