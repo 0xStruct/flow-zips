@@ -21,12 +21,18 @@ export default function ZipUnzip({ item, setItemStatus }) {
   const doZipUnzip = async () => {
     setBtnDisabled(true)
     await zipUnzip(item)
-    await decryptText()
   }
+
+  // decryptText only after zipUnzip is successful
+  useEffect(() => {
+    if(tx?.status === 4) {
+      decryptText()
+    }
+  }, [tx])
 
   const decryptText = async () => {
     // get encryptedDataURI and encryptedSymmetricKey zipData
-    console.log(item.zipData.split("<zip>"))
+    //console.log(item.zipData.split("<zip>"))
     const encryptedDataURI = item.zipData.split("<zip>")[0]
     const encryptedSymmetricKey = item.zipData.split("<zip>")[1]
 
@@ -37,13 +43,14 @@ export default function ZipUnzip({ item, setItemStatus }) {
 
     try {
       const decryptedString = await lit.decryptText(encryptedDataURIBlob, encryptedSymmetricKey, item.itemID);
-      //setDecryptedText(decryptedString);
 
       setUnzipped(true)
       setItemStatus("unzipped")
       setSecret(decryptedString)
     } catch (error) {
-      alert(noAuthError);
+      alert(noAuthError)
+      // handle decrypt error
+      return
     }
   }
 
