@@ -2,8 +2,9 @@
 
 **DEMO APP:** https://flow-zips.vercel.app
 
-This project implements zips (which keep secrets in decentralized trustless manner) into FLOW NFTs.
-The codebase build upon typical FLOW NFT project, Kitty Items, to add zips into NFTs.
+This project implements zips (which keep secrets in decentralized trustless manner) into FLOW NFTs; activating billions of real world values locked in gift cards, passes, etc.
+
+The codebase build upon a typical FLOW NFT project, Kitty Items, to add zips into NFTs.
 
 ![https://imgur.com/J1lj6OS](https://i.imgur.com/J1lj6OS.png)
 
@@ -22,6 +23,13 @@ Trustless secret management is done through LIT Protocol (https://litprotocol.co
 	- NFT Zip on FLOW is marked as “unzipped” forever
 
 _Throughout the process, FLOW Zips don't get in the way of secrets_
+
+### Contract on Testnet
+
+It is deployed to [`0xf995ac10f60cec98`](https://flow-view-source.com/testnet/account/0xf995ac10f60cec98/contract/FlowZips)
+
+Contract source code is at [`./cadence/contracts/FlowZips.cdc`](https://github.com/0xStruct/flow-zips/blob/main/cadence/contracts/FlowZips.cdc)
+
 
 ### Code Walkthrough
 
@@ -53,5 +61,6 @@ As LIT doesn't support FLOW blockchain yet, below walkaround is implemented.
 	- via FLOW REST API by calling a [Cadence script](https://gist.github.com/0xStruct/01eac9bec2d926309d9f997949695227#file-checkzipunzip-cdc)
 - As zipStatus can be set to _unzipped_ only by the owner, only owner can prove the condition and get back the decrypted symmetric key
 
+Above steps are taken care of in [`./web/src/util/lit.js`](https://github.com/0xStruct/flow-zips/blob/main/web/src/util/lit.js)
 
 
