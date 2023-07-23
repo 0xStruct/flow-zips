@@ -27,7 +27,7 @@ export default function KittyItem() {
     currentUser && item?.owner && item.owner === currentUser?.addr
   const isSellable = currentUserIsOwner && !listing
 
-  const [itemStatus, setItemStatus] = useState(item?.zipStatus || "blank")
+  const [itemStatus, setItemStatus] = useState(item?.zipStatus)
 
   if(item) console.log(`item ${item.itemID}: `, item)
 
