@@ -1,7 +1,7 @@
 import FungibleToken from 0xFungibleToken
 import NonFungibleToken from 0xNonFungibleToken
 import FlowToken from 0xFlowToken
-import FlowZips from 0xKittyItems
+import FlowZips from 0xFlowZips
 import NFTStorefrontV2 from 0xNFTStorefront
 
 pub fun getOrCreateStorefront(account: AuthAccount): &NFTStorefrontV2.Storefront {
